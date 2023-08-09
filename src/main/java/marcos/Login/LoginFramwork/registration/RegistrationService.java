@@ -1,6 +1,8 @@
 package marcos.Login.LoginFramwork.registration;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import marcos.Login.LoginFramwork.appuser.AppUser;
 import marcos.Login.LoginFramwork.appuser.AppUserRole;
 import marcos.Login.LoginFramwork.appuser.AppUserService;
+import marcos.Login.LoginFramwork.contact.Contact;
 import marcos.Login.LoginFramwork.email.EmailSender;
 import marcos.Login.LoginFramwork.registration.token.ConfirmationToken;
 import marcos.Login.LoginFramwork.registration.token.ConfirmationTokenService;
@@ -19,6 +22,7 @@ public class RegistrationService {
     private final AppUserService appUserService;
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailSender emailSender;
+    private List<Contact> contacts = new ArrayList<>();
 
     public RegistrationService(EmailValidator emailValidator, AppUserService appUserService, ConfirmationTokenService confirmationTokenService, EmailSender emailSender) {
         this.emailValidator = emailValidator;
@@ -41,8 +45,9 @@ public class RegistrationService {
                         request.getLastname(),
                         request.getEmail(),
                         request.getPassword(),
-                        AppUserRole.USER
-
+                        AppUserRole.USER,
+                        contacts
+                       
                 )
         );
         String link = "http://localhost:8080/api/v1/registration/confirm?token=" + token;

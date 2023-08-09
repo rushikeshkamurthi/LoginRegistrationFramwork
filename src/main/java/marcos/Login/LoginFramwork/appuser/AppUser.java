@@ -1,14 +1,18 @@
 package marcos.Login.LoginFramwork.appuser;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -16,14 +20,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import marcos.Login.LoginFramwork.contact.Contact;
 
-@Getter
-@Setter
+
 @EqualsAndHashCode
-@NoArgsConstructor
 @Entity
 public class AppUser implements UserDetails{
 	
@@ -48,10 +48,21 @@ public class AppUser implements UserDetails{
 	private boolean enabled = false;
 	private boolean locked = false;
 	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Contact> contacts = new ArrayList<>();
+
+	
 	public AppUser() {
         // Default constructor
     }
+	
+	public List<Contact> getContacts() {
+        return contacts;
+    }
 
+    public void setContacts(List<Contact> contacts) {
+        this.contacts = contacts;
+    }
 	public boolean isLocked() {
 		return locked;
 	}
@@ -82,21 +93,21 @@ public class AppUser implements UserDetails{
 	}
 
 
-	public AppUser(String username, String name, String email, String password, AppUserRole appUserRole) {
+	public AppUser(String username, String name, String email, String password, AppUserRole appUserRole, List<Contact> contacts) {
 		super();
 		this.lastname = username;
 		this.firstname = name;
 		this.email = email;
 		this.password = password;
 		this.appUserRole = appUserRole;
+		this.contacts = contacts;
 	}
 	
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		SimpleGrantedAuthority authority = new SimpleGrantedAuthority(appUserRole.name() );
-		return Collections.singletonList(authority); 
+	    SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + appUserRole.name());
+	    return Collections.singletonList(authority);
 	}
 
 	@Override
