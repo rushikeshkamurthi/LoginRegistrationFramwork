@@ -8,6 +8,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import marcos.Login.LoginFramwork.appuser.AppUser;
 
 @Entity
@@ -25,25 +27,26 @@ public class Contact {
     )
 	private Long id;
 	private String name;
+	private String number;
 	private String Address;
 	private Boolean isFav = false;
 	private String image;
-	
 	@ManyToOne
-	@JoinColumn(name = "user_id", referencedColumnName = "id")
+	@JsonIgnore // to stop infinite call of recusrive serialosation.
 	private AppUser user;
-	
+
 	
 	public Contact() {
 		// Default class
 	}
 	
-	public Contact(String name, String address, Boolean isFav, String image) {
+	public Contact(String name,String number, String address, Boolean isFav, String image ) {
 		super();
 		this.name = name;
 		Address = address;
 		this.isFav = isFav;
 		this.image = image;
+		this.number = number;
 	}
 
 	public Long getId() {
@@ -92,13 +95,21 @@ public class Contact {
 	public void setImage(String image) {
 		this.image = image;
 	}
+	
+	public String getNumber() {
+		return number;
+	}
+
+	public void setNumber(String number) {
+		this.number = number;
+	}
 
 	@Override
 	public String toString() {
-		return "Contact [id=" + id + ", name=" + name + ", Address=" + Address + ", isFav=" + isFav + ", image=" + image
-				+ "]";
+		return "Contact [id=" + id + ", name=" + name + ", number=" + number + ", Address=" + Address + ", isFav="
+				+ isFav + ", image=" + image + ", user=" + user + "]";
 	}
-	
+
 	
 	
 }

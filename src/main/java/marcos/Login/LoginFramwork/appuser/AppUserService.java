@@ -2,6 +2,8 @@ package marcos.Login.LoginFramwork.appuser;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -53,5 +55,18 @@ public class AppUserService implements UserDetailsService {
     }
     public int enableAppUser(String email) {
         return appUserRepository.enableAppUser(email);
+    }
+    
+    public AppUser getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            throw new IllegalStateException("No user authenticated");
+        }
+        
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        
+        String email = userDetails.getUsername();
+        return appUserRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, email)));
     }
 }

@@ -12,6 +12,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 
@@ -48,8 +49,9 @@ public class AppUser implements UserDetails{
 	private boolean enabled = false;
 	private boolean locked = false;
 	
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Contact> contacts = new ArrayList<>();
+	 @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	    @JoinColumn(name = "user_id")
+	    private List<Contact> contacts = new ArrayList<>();
 
 	
 	public AppUser() {
